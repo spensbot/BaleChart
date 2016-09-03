@@ -1,43 +1,49 @@
-import tkinter as tk
+import pygame
+from parameters import *
+from functions import *
 
-Material = ["PET","HDPE","MP"]
-Comp = [.5,.25,.25] # Adds to 1
-Baler1 = [50,25,50] # Processing Capability in Tons Per Hour
-Bunker = [100,100,100] # Capacity in Tons
-TPH = 35
-InitialFill = [0,0,0]
-Shift = 8 #hours
+#Pygame initialization
+pygame.init()
+surface = pygame.display.set_mode((width,height))
+font = pygame.font.SysFont("Courier", 16)
 
-Fill = [InitialFill]
-current = [0,0,0]
-last = [0,0,0]
+#initialize variables
+cursor_pos = 0
+switch = [0 for x in range(step_count)]
 
-for x in range(0, Shift):
-    for y in range(0, len(Comp)):
-        current[y] = last[y] + Comp[y]*TPH
-    Fill.append(list(current))
-    last = list(current)
+# Loop Forever
+while True:
 
-class Application(tk.Frame):
-    def __init__(self, master=None):
-        super().__init__(master)
-        self.pack()
-        self.create_widgets()
+    #read user input
+    ev = pygame.event.poll()
+    if ev.type == pygame.QUIT:
+        break
+    elif ev.type == pygame.KEYDOWN:
+        key = ev.dict["key"]
+        if key == 275:
+            cursor_pos += 1
+        elif key == 276:
+            cursor_pos -= 1
+        elif 49 <= key < 49+len(comp):
+            switch[cursor_pos] = key-48
+        cursor_pos = clamp(cursor_pos, 0, step_count -1)
+    elif ev.type == pygame.MOUSEMOTION:
+        print(ev)
+        pos = ev.dict["pos"]
+        x_pos = pos[0]
+        if menu_width < x_pos < width:
+            cursor_pos = int((x_pos-menu_width)/schedule_width*(shift*blocks + OT*blocks))
 
-    def create_widgets(self):
-        self.hi_there = tk.Button(self)
-        self.hi_there["text"] = "Hello World\n(click me)"
-        self.hi_there["command"] = self.say_hi
-        self.hi_there.pack(side="left")
+    #draw the window
+    fill = bunker_fill(switch)
+    draw_window(surface)
+    draw_materials(surface, fill, cursor_pos, font)
+    draw_schedule(surface, switch)
+    draw_cursor(surface, cursor_pos)
 
-        self.quit = tk.Button(self, text = "QUIT", fg="red", command=root.destroy)
-        self.quit.pack(side="left")
+    #render the window
+    pygame.display.flip()
 
+#when the game loop has ended
+pygame.quit()
 
-
-    def say_hi(self):
-        print("hi there, everyone!")
-
-root = tk.Tk()
-app = Application(master=root)
-app.mainloop()
