@@ -7,15 +7,17 @@ initial_fill = [0,0,0,0,0] #The initial fill of the bunkers
 TPH = 5 #TPH of the infeed material
 shift = 8 #hours
 OT = 4 #hours
-blocks = 4 #Number of steps per hour
+blocks = 20 #Number of steps per hour
 change_over = 5.0/60 #Baler Changeover Time (hours)
 
 #generated parameters
 step_count = shift*blocks + OT*blocks + 1 #The number of steps that will make up the schedule
+fill_time = [bunker[i]/(comp[i]*TPH) for i in range(len(comp))]
+
 
 #GUI parameters
 schedule_width = 800
-schedule_color = (0,0,0)
+schedule_color = (50,50,50)
 background_color = (255,255,255)
 OT_color = (200,100,100)
 menu_width = 200
@@ -27,9 +29,13 @@ width = menu_width + schedule_width
 row_height = 30
 row_padding = 10
 header_height = 50
-height =(row_height + row_padding*2)*len(material)
+header_color = (0,0,0)
+height =(row_height + row_padding*2)*len(material) + header_height
 cursor_step = schedule_width/(shift*blocks + OT*blocks)
 cursor_color1 = (200,200,200)
 cursor_color2 = (0,0,0)
 cursor_width1 = 5
 cursor_width2 = 3
+tick_color = (255,255,255)
+tick_width = 3
+tick_height = 10

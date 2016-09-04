@@ -40,6 +40,8 @@ while True:
     draw_materials(surface, fill, cursor_pos, font)
     draw_schedule(surface, switch)
     draw_cursor(surface, cursor_pos)
+    draw_header(surface)
+    draw_ticks(surface, font)
 
     #render the window
     pygame.display.flip()

@@ -40,7 +40,7 @@ def draw_cursor(surface, cursor_pos):
 
 def draw_materials(surface, fill, cursor_pos, font):
     for row in range(len(comp)):
-        from_top = row * row_height + row*row_padding*2 + row_padding
+        from_top = row * row_height + row*row_padding*2 + row_padding + header_height
         fill_percent = fill[cursor_pos][row]/bunker[row]
         surface.fill((0,150,0),(0,from_top,fill_percent*menu_width,row_height))
         label = repr(row + 1) + ": " + material[row]
@@ -53,9 +53,21 @@ def draw_schedule(surface, switch):
         if switch[i] > 0:
             baled = switch[i]
         if baled > 0:
-            from_top = (baled -1) * row_height + (baled-1)* row_padding * 2 + row_padding
+            from_top = (baled -1) * row_height + (baled-1)* row_padding * 2 + row_padding + header_height
             from_left = menu_width + cursor_step * i
             surface.fill(schedule_color, (from_left, from_top, cursor_step+1, row_height))
+
+def draw_header(surface):
+    surface.fill(header_color, (0, 0, width, header_height))
+
+def draw_ticks(surface, font):
+    spacing = schedule_width/(shift+OT)
+    for n in range(shift+OT+1):
+        tick_text = font.render(repr(n), True, tick_color)
+        surface.blit(tick_text, (menu_width + n*spacing - 5, 10))
+        surface.fill(tick_color, (menu_width + n*spacing - tick_width/2, header_height - tick_height, tick_width, tick_height))
+        surface.fill(tick_color, (menu_width + n*spacing + spacing/2, header_height - tick_height, tick_width/2+1, tick_height/2))
+
 
 def clamp(n, min, max):
     if n < min:
@@ -63,3 +75,4 @@ def clamp(n, min, max):
     elif n > max:
         n = max
     return n
+
